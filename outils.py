@@ -58,6 +58,7 @@ class Snake():
         #Collision avec corps
         for x in self.corps:
             if self.rect.colliderect(pygame.Rect(x[0], x[1], TAILLE_SNAKE, TAILLE_SNAKE)):
+                print(f"Bloc:{x[0]}:{x[1]}")
                 return True
 
         pygame.draw.rect(surface, 'red', self.rect)
@@ -87,14 +88,15 @@ class Jeu():
 
         pygame.draw.rect(surface, 'blue', self.rect, 2)
 
-        self.pomme.affichage(surface)
-
         if self.auto == 1:
             ia(self.rect, self.pomme, self.joueur)
 
         if self.joueur.affichage(surface, self.rect):
-            print(self.joueur.rect.x,self.joueur.rect.y, self.joueur.direction)
+            print(f"Joueur: x{self.joueur.rect.x}: y{self.joueur.rect.y}, direction:{self.joueur.direction}")
+            print(f"Fruit: x{self.pomme.rect.x}: y{self.pomme.rect.y}")
             return True
+
+        self.pomme.affichage(surface)
 
         if self.pomme.rect.colliderect(self.joueur.rect):
 
