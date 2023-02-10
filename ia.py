@@ -5,29 +5,11 @@ def ia(rect, fruit, joueur):
     a, b = (rect.x + rect.w), (rect.y + rect.h)
 
     #Collision avec corps
-    if [joueur.rect.x + 20, joueur.rect.y] in joueur.corps and joueur.direction == 0:
-        if fruit.rect.y > (joueur.rect.y)  and obstruction(joueur, fruit, 3):
-            joueur.direction = 3
-        else:
-            joueur.direction = 2
 
-    if [joueur.rect.x - 20, joueur.rect.y] in joueur.corps and joueur.direction == 1:
-        if fruit.rect.y > (joueur.rect.y)  and obstruction(joueur, fruit, 3):
-            joueur.direction = 3
-        else:
-            joueur.direction = 2
-    
-    if [joueur.rect.x, joueur.rect.y - 20] in joueur.corps and joueur.direction == 2:
-        if fruit.rect.x > (joueur.rect.x) and obstruction(joueur, fruit, 0):
-            joueur.direction = 0
-        else:
-            joueur.direction = 1
-
-    if [joueur.rect.x, joueur.rect.y + 20] in joueur.corps and joueur.direction == 3:
-        if fruit.rect.x > (joueur.rect.x) and obstruction(joueur, fruit, 0):
-            joueur.direction = 0
-        else:
-            joueur.direction = 1
+    collision_corps_haut = [joueur.rect.x, joueur.rect.y - 20] in joueur.corps and joueur.direction == 2
+    collision_corps_bas = [joueur.rect.x, joueur.rect.y + 20] in joueur.corps and joueur.direction == 3
+    collision_corps_droite = [joueur.rect.x + 20, joueur.rect.y] in joueur.corps and joueur.direction == 0
+    collision_corps_gauche= [joueur.rect.x - 20, joueur.rect.y] in joueur.corps and joueur.direction == 1
 
     #Collision Mur
 
@@ -36,14 +18,16 @@ def ia(rect, fruit, joueur):
     collision_droite = (joueur.rect.x + 40 > a) and joueur.direction == 0
     collision_gauche = (joueur.rect.x - 20 < rect.x) and joueur.direction == 1
 
-    if collision_droite or collision_gauche:
+    #Gestion collision
+
+    if collision_droite or collision_gauche or collision_corps_droite or collision_corps_gauche:
         if fruit.rect.y > (joueur.rect.y)  and obstruction(joueur, fruit, 3):
             joueur.direction = 3
         else:
             joueur.direction = 2
 
 
-    if collision_haut or collision_bas:
+    if collision_haut or collision_bas or collision_corps_haut or collision_corps_bas:
         if fruit.rect.x > (joueur.rect.x)  and obstruction(joueur, fruit, 0):
             joueur.direction = 0
         else:
