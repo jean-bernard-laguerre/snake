@@ -58,10 +58,9 @@ class Snake():
         #Collision avec corps
         for x in self.corps:
             if self.rect.colliderect(pygame.Rect(x[0], x[1], TAILLE_SNAKE, TAILLE_SNAKE)):
-                print(f"Bloc:{x[0]}:{x[1]}")
                 return True
 
-        pygame.draw.rect(surface, 'red', self.rect)
+        pygame.draw.rect(surface, 'brown', self.rect)
         time.sleep(.07)
 
         return False
@@ -92,8 +91,6 @@ class Jeu():
             ia(self.rect, self.pomme, self.joueur)
 
         if self.joueur.affichage(surface, self.rect):
-            print(f"Joueur: x{self.joueur.rect.x}: y{self.joueur.rect.y}, direction:{self.joueur.direction}")
-            print(f"Fruit: x{self.pomme.rect.x}: y{self.pomme.rect.y}")
             return True
 
         self.pomme.affichage(surface)
@@ -157,4 +154,4 @@ def recuperer():
 
     f.close()
     
-    return sorted(scores["Scores"], reverse=True)
+    return sorted(scores["Scores"], reverse=True)[:10]

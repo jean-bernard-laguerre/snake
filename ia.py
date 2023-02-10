@@ -6,16 +6,28 @@ def ia(rect, fruit, joueur):
 
     #Collision avec corps
     if [joueur.rect.x + 20, joueur.rect.y] in joueur.corps and joueur.direction == 0:
-        print('Collision Corps Droite')
+        if fruit.rect.y > (joueur.rect.y)  and obstruction(joueur, fruit, 3):
+            joueur.direction = 3
+        else:
+            joueur.direction = 2
 
     if [joueur.rect.x - 20, joueur.rect.y] in joueur.corps and joueur.direction == 1:
-        print('Collision Corps Gauche')
+        if fruit.rect.y > (joueur.rect.y)  and obstruction(joueur, fruit, 3):
+            joueur.direction = 3
+        else:
+            joueur.direction = 2
     
     if [joueur.rect.x, joueur.rect.y - 20] in joueur.corps and joueur.direction == 2:
-        print('Collision Corps Haut')
+        if fruit.rect.x > (joueur.rect.x) and obstruction(joueur, fruit, 0):
+            joueur.direction = 0
+        else:
+            joueur.direction = 1
 
     if [joueur.rect.x, joueur.rect.y + 20] in joueur.corps and joueur.direction == 3:
-        print('Collision Corps Bas')
+        if fruit.rect.x > (joueur.rect.x) and obstruction(joueur, fruit, 0):
+            joueur.direction = 0
+        else:
+            joueur.direction = 1
 
     #Collision Mur
 
@@ -25,63 +37,88 @@ def ia(rect, fruit, joueur):
     collision_gauche = (joueur.rect.x - 20 < rect.x) and joueur.direction == 1
 
     if collision_droite or collision_gauche:
-        if fruit.rect.y > (joueur.rect.y):
+        if fruit.rect.y > (joueur.rect.y)  and obstruction(joueur, fruit, 3):
             joueur.direction = 3
         else:
             joueur.direction = 2
 
 
     if collision_haut or collision_bas:
-        if fruit.rect.x > (joueur.rect.x):
+        if fruit.rect.x > (joueur.rect.x)  and obstruction(joueur, fruit, 0):
             joueur.direction = 0
         else:
             joueur.direction = 1
 
 
     #Se deplace vers le fruit
-    if fruit.rect.x < (joueur.rect.x-19) and joueur.direction != 0 and chemin(joueur, fruit, 1):
+    if fruit.rect.x < (joueur.rect.x-19) and joueur.direction != 0 and obstruction(joueur, fruit, 1):
         if [joueur.rect.x - 20, joueur.rect.y] not in joueur.corps:
             joueur.direction = 1
 
 
-    elif fruit.rect.x > (joueur.rect.x+19) and joueur.direction != 1 and chemin(joueur, fruit, 0):
+    elif fruit.rect.x > (joueur.rect.x+19) and joueur.direction != 1 and obstruction(joueur, fruit, 0):
         if [joueur.rect.x + 20, joueur.rect.y] not in joueur.corps:
             joueur.direction = 0
         
 
-    if fruit.rect.y > (joueur.rect.y+19) and joueur.direction != 2 and chemin(joueur, fruit, 3):
+    if fruit.rect.y > (joueur.rect.y+19) and joueur.direction != 2 and obstruction(joueur, fruit, 3):
         if [joueur.rect.x, joueur.rect.y + 20] not in joueur.corps:
             joueur.direction = 3
 
 
-    elif fruit.rect.y < (joueur.rect.y-19) and joueur.direction != 3 and chemin(joueur, fruit, 2):
+    elif fruit.rect.y < (joueur.rect.y-19) and joueur.direction != 3 and obstruction(joueur, fruit, 2):
         if [joueur.rect.x, joueur.rect.y - 20] not in joueur.corps:
             joueur.direction = 2
 
 
-
-def chemin(joueur, fruit, direction):
+#Retourne False si le corps du snake fait obstruction
+def obstruction(joueur, fruit, direction):
 
     for bloc in joueur.corps:
 
-        vertical = (joueur.rect.x-19 < fruit.rect.x < joueur.rect.x+19) and (joueur.rect.x-19 < bloc[0] < joueur.rect.x+19) 
-        horizontal = (joueur.rect.y-19 < fruit.rect.y < joueur.rect.y+19) and (joueur.rect.y-19 < bloc[1] < joueur.rect.y+19)
+        #Fruit aligné avec le serpent
+        fruit_vertical = (joueur.rect.x-20 < fruit.rect.x < joueur.rect.x+20)
+        fruit_horizontal = (joueur.rect.y-20 < fruit.rect.y < joueur.rect.y+20)
+        #Bloc du corps aligné avec le serpent
+        corps_vertical = (joueur.rect.x == bloc[0]) 
+        corps_horizontal = (joueur.rect.y == bloc[1])
 
-        bloc_haut = vertical and (fruit.rect.y <= bloc[1]+40 <= joueur.rect.y)
-        bloc_bas = vertical and (fruit.rect.y >= bloc[1]-40 >= joueur.rect.y)
-        bloc_droite = horizontal and (fruit.rect.x >= bloc[0]-40 >= joueur.rect.x)
-        bloc_gauche = horizontal and (fruit.rect.x <= bloc[0]+40 <= joueur.rect.x)
+        #Corps entre serpent et fruit
+        fruit_obs_haut = corps_vertical and (fruit.rect.y <= bloc[1] <= joueur.rect.y)
+        fruit_obs_bas = corps_vertical and (fruit.rect.y >= bloc[1] >= joueur.rect.y)
+        fruit_obs_droite = corps_horizontal and (fruit.rect.x >= bloc[0] >= joueur.rect.x)
+        fruit_obs_gauche = corps_horizontal and (fruit.rect.x <= bloc[0] <= joueur.rect.x)
 
-        if bloc_haut and direction == 2:
-            return False
-            
-        if bloc_bas and direction == 3:
-            return False
+        #bloc du corps en serpent et mur
+        corps_obs_haut = corps_vertical and (bloc[1] < joueur.rect.y)
+        corps_obs_bas = corps_vertical and (bloc[1] > joueur.rect.y)
+        corps_obs_droite = corps_horizontal and (bloc[0] > joueur.rect.x)
+        corps_obs_gauche = corps_horizontal and (bloc[0] < joueur.rect.x)
 
-        if bloc_droite and direction == 0:
-            return False
+        match direction:
 
-        if bloc_gauche and direction == 1:
-            return False
+            case 0:
+                if corps_obs_droite and (not fruit_obs_droite) and (not fruit_horizontal):
+                    return False
+                elif fruit_obs_droite:
+                    return False
+
+            case 1:
+                if corps_obs_gauche and (not fruit_obs_gauche) and (not fruit_horizontal):
+                    return False
+                elif fruit_obs_gauche:
+                    return False
+
+            case 2:
+                if corps_obs_haut and (not fruit_obs_haut) and (not fruit_vertical):
+                    return False
+                elif fruit_obs_haut:
+                    return False
+
+            case 3:
+                if corps_obs_bas and (not fruit_obs_bas) and (not fruit_vertical):
+                    return False
+                elif fruit_obs_bas:
+                    return False
 
     return True

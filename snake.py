@@ -39,7 +39,7 @@ def ecran_jeu():
         statut_partie = 2
         enregistrer(jeu.score)
 
-    fenetre.blit(score, (25, 25))
+    fenetre.blit(score, (10, 25))
                 
                 
 def ecran_fin():
@@ -55,7 +55,7 @@ def ecran_fin():
 
         statut_partie = 3
         
-    fenetre.blit(score,(300,275))
+    fenetre.blit(score,(350,275))
 
 
 def ecran_score():
@@ -66,7 +66,7 @@ def ecran_score():
 
     for i,score in enumerate(recuperer()):
         texte = police_snake.render(f"{score}", 1, 'black')
-        fenetre.blit(texte, (325, (100+(i*40))))
+        fenetre.blit(texte, (380, (100+(i*40))))
 
     if Bouton("Retour Menu", 600, 500, police_snake).affichage(fenetre):
 
