@@ -2,24 +2,22 @@ import random
 
 def ia(rect, fruit, joueur):
 
+    #Coordonnées des murs
     a, b = (rect.x + rect.w), (rect.y + rect.h)
-
-    #Collision avec corps
-
-    collision_corps_haut = [joueur.rect.x, joueur.rect.y - 20] in joueur.corps and joueur.direction == 2
-    collision_corps_bas = [joueur.rect.x, joueur.rect.y + 20] in joueur.corps and joueur.direction == 3
-    collision_corps_droite = [joueur.rect.x + 20, joueur.rect.y] in joueur.corps and joueur.direction == 0
-    collision_corps_gauche= [joueur.rect.x - 20, joueur.rect.y] in joueur.corps and joueur.direction == 1
-
+    
     #Collision Mur
-
     collision_haut = (joueur.rect.y - 20 < rect.y) and joueur.direction == 2
     collision_bas = (joueur.rect.y + 40 > b) and joueur.direction == 3
     collision_droite = (joueur.rect.x + 40 > a) and joueur.direction == 0
     collision_gauche = (joueur.rect.x - 20 < rect.x) and joueur.direction == 1
 
-    #Gestion collision
+    #Collision corps
+    collision_corps_haut = [joueur.rect.x, joueur.rect.y - 20] in joueur.corps and joueur.direction == 2
+    collision_corps_bas = [joueur.rect.x, joueur.rect.y + 20] in joueur.corps and joueur.direction == 3
+    collision_corps_droite = [joueur.rect.x + 20, joueur.rect.y] in joueur.corps and joueur.direction == 0
+    collision_corps_gauche= [joueur.rect.x - 20, joueur.rect.y] in joueur.corps and joueur.direction == 1
 
+    #Gestion collision
     if collision_droite or collision_gauche or collision_corps_droite or collision_corps_gauche:
         if fruit.rect.y > (joueur.rect.y)  and obstruction(joueur, fruit, 3):
             joueur.direction = 3
@@ -34,7 +32,7 @@ def ia(rect, fruit, joueur):
             joueur.direction = 1
 
 
-    #Se deplace vers le fruit
+    #Se deplace vers le fruit si la voie est libre
     if fruit.rect.x < (joueur.rect.x-19) and joueur.direction != 0 and obstruction(joueur, fruit, 1):
         if [joueur.rect.x - 20, joueur.rect.y] not in joueur.corps:
             joueur.direction = 1
@@ -55,15 +53,16 @@ def ia(rect, fruit, joueur):
             joueur.direction = 2
 
 
-#Retourne False si le corps du snake fait obstruction
+#Retourne False si le corps du serpent fait obstruction
 def obstruction(joueur, fruit, direction):
 
     for bloc in joueur.corps:
 
-        #Fruit aligné avec le serpent
+        #Fruit aligné avec la tete du serpent
         fruit_vertical = (joueur.rect.x-20 < fruit.rect.x < joueur.rect.x+20)
         fruit_horizontal = (joueur.rect.y-20 < fruit.rect.y < joueur.rect.y+20)
-        #Bloc du corps aligné avec le serpent
+
+        #Bloc du corps aligné avec la tete du serpent
         corps_vertical = (joueur.rect.x == bloc[0]) 
         corps_horizontal = (joueur.rect.y == bloc[1])
 

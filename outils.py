@@ -10,6 +10,8 @@ class Snake():
 
     def __init__(self, x, y):
         self.rect = pygame.Rect(x, y, TAILLE_SNAKE, TAILLE_SNAKE)
+
+        #Liste contenant les coordonnés du corps du serpent
         self.corps = [[x-TAILLE_SNAKE,y],[x-40,y],[x-60,y]]
         self.direction = 0
 
@@ -17,7 +19,8 @@ class Snake():
         
         a, b = (rect.x + rect.w), (rect.y + rect.h)
         touche = pygame.key.get_pressed()
-
+        
+        #Changement de direction avec les fleches
         if touche[pygame.K_RIGHT] and self.direction != 1:
             self.direction = 0
         if touche[pygame.K_LEFT] and self.direction != 0:
@@ -27,6 +30,7 @@ class Snake():
         if touche[pygame.K_DOWN] and self.direction != 2:
             self.direction = 3
 
+        #Boucle mettant a jour la position de chaque segment du corps du serpent
         i = len(self.corps)-1
         while i >= 0:
 
@@ -40,7 +44,8 @@ class Snake():
             pygame.draw.rect(surface, 'red', pygame.Rect(self.corps[i][0], self.corps[i][1], TAILLE_SNAKE, TAILLE_SNAKE))
             
             i-=1
-
+        
+        #Avance automatiquement dans la direction actuelle
         match self.direction:
             case 0:
                 if self.rect.x + self.rect.width < a:
@@ -55,7 +60,7 @@ class Snake():
                 if self.rect.y + self.rect.height < b:
                     self.rect.y += TAILLE_SNAKE
 
-        #Collision avec corps
+        #Retourne true en cas de collision avec le corps du serpent
         for x in self.corps:
             if self.rect.colliderect(pygame.Rect(x[0], x[1], TAILLE_SNAKE, TAILLE_SNAKE)):
                 return True
@@ -87,6 +92,7 @@ class Jeu():
 
         pygame.draw.rect(surface, 'blue', self.rect, 2)
 
+        #L'ia choisis la direction du serpent lorsqu'elle est active
         if self.auto == 1:
             ia(self.rect, self.pomme, self.joueur)
 
@@ -95,6 +101,7 @@ class Jeu():
 
         self.pomme.affichage(surface)
 
+        #Lorsque le serpent et le fruit entre en contact, ajoute 1 point allonge le serpent et change la position de la pomme
         if self.pomme.rect.colliderect(self.joueur.rect):
 
             self.joueur.corps.insert(0,[self.joueur.rect.x, self.joueur.rect.y])
@@ -129,7 +136,7 @@ class Bouton():
 
         return action
 
-
+#Ajoute le score dans scores.json
 def enregistrer(score):
 
     f = open("scores.json", "r+")
@@ -146,7 +153,7 @@ def enregistrer(score):
 
     f.close()
 
-
+#Recupere les dix meilleurs scores
 def recuperer():
 
     f = open("scores.json", "r+")
