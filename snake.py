@@ -4,6 +4,7 @@ from outils import *
 pygame.init()
 
 fenetre = pygame.display.set_mode((800,600))
+pygame.display.set_caption("Snake")
 tdr = pygame.time.Clock()
 police_snake = pygame.font.SysFont('Verdana', 16)
 
