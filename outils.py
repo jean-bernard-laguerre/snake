@@ -90,7 +90,7 @@ class Jeu():
 
     def affichage(self, surface):
 
-        pygame.draw.rect(surface, 'black', self.rect, 2)
+        pygame.draw.rect(surface, 'white', self.rect, 2)
 
         #L'ia choisis la direction du serpent lorsqu'elle est active
         if self.auto == 1:
@@ -114,7 +114,7 @@ class Jeu():
 
 class Bouton():
     def __init__(self, message, x, y, police):
-        self.texte = police.render(message, 1, 'black')
+        self.texte = police.render(message, 1, 'white')
         self.rect = self.texte.get_rect()
         self.rect.topleft = (x, y)
         self.rect.w = self.texte.get_width()+20

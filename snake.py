@@ -34,7 +34,7 @@ def ecran_jeu():
 
     global statut_partie
 
-    score = police_snake.render(f"Score: {jeu.score}", 1 ,'black')
+    score = police_snake.render(f"Score: {jeu.score}", 1 ,'white')
 
     if jeu.affichage(fenetre):
         statut_partie = 2
@@ -46,7 +46,7 @@ def ecran_jeu():
 def ecran_fin():
     global statut_partie
     
-    score = police_snake.render(f"Score: {jeu.score}", 1, 'black')
+    score = police_snake.render(f"Score: {jeu.score}", 1, 'white')
     
     if Bouton("Retour Menu", 600, 500, police_snake).affichage(fenetre):
 
@@ -62,11 +62,11 @@ def ecran_fin():
 def ecran_score():
     global statut_partie
 
-    lbl_score = police_snake.render("Meilleurs scores", 1, 'black')
+    lbl_score = police_snake.render("Meilleurs scores", 1, 'white')
     fenetre.blit(lbl_score, (325, 50))
 
     for i,score in enumerate(recuperer()):
-        texte = police_snake.render(f"{score}", 1, 'black')
+        texte = police_snake.render(f"{score}", 1, 'white')
         fenetre.blit(texte, (380, (100+(i*40))))
 
     if Bouton("Retour Menu", 600, 500, police_snake).affichage(fenetre):
@@ -84,7 +84,7 @@ en_cours = True
 while en_cours:
 
     tdr.tick(60)
-    fenetre.fill((255,255,255))
+    fenetre.fill((40,40,40))
 
     match statut_partie:
         case 0:
