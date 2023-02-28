@@ -14,6 +14,7 @@ class Snake():
         #Liste contenant les coordonnés du corps du serpent
         self.corps = [[x-TAILLE_SNAKE,y],[x-40,y],[x-60,y]]
         self.direction = 0
+        self.inter = .1
 
     def affichage(self, surface, rect):
         
@@ -30,35 +31,39 @@ class Snake():
         if touche[pygame.K_DOWN] and self.direction != 2:
             self.direction = 3
 
-        #Boucle mettant a jour la position de chaque segment du corps du serpent
-        i = len(self.corps)-1
-        while i >= 0:
+        if self.inter < 0:
 
-            if i == 0:
-                self.corps[i][0] = self.rect.x
-                self.corps[i][1] = self.rect.y
-            else:
-                self.corps[i][0] = self.corps[i-1][0]
-                self.corps[i][1] = self.corps[i-1][1]
+            #Boucle mettant a jour la position de chaque segment du corps du serpent
+            i = len(self.corps)-1
+            while i >= 0:
 
-            pygame.draw.rect(surface, 'red', pygame.Rect(self.corps[i][0], self.corps[i][1], TAILLE_SNAKE, TAILLE_SNAKE))
+                if i == 0:
+                    self.corps[i][0] = self.rect.x
+                    self.corps[i][1] = self.rect.y
+                else:
+                    self.corps[i][0] = self.corps[i-1][0]
+                    self.corps[i][1] = self.corps[i-1][1]
+
+                pygame.draw.rect(surface, 'red', pygame.Rect(self.corps[i][0], self.corps[i][1], TAILLE_SNAKE, TAILLE_SNAKE))
+                
+                i-=1
             
-            i-=1
-        
-        #Avance automatiquement dans la direction actuelle
-        match self.direction:
-            case 0:
-                if self.rect.x + self.rect.width < a:
-                    self.rect.x += TAILLE_SNAKE
-            case 1:
-                if self.rect.x > rect.x:
-                    self.rect.x -= TAILLE_SNAKE
-            case 2:
-                if self.rect.y > rect.y:
-                    self.rect.y -= TAILLE_SNAKE
-            case 3:
-                if self.rect.y + self.rect.height < b:
-                    self.rect.y += TAILLE_SNAKE
+            #Avance automatiquement dans la direction actuelle
+            match self.direction:
+                case 0:
+                    if self.rect.x + self.rect.width < a:
+                        self.rect.x += TAILLE_SNAKE
+                case 1:
+                    if self.rect.x > rect.x:
+                        self.rect.x -= TAILLE_SNAKE
+                case 2:
+                    if self.rect.y > rect.y:
+                        self.rect.y -= TAILLE_SNAKE
+                case 3:
+                    if self.rect.y + self.rect.height < b:
+                        self.rect.y += TAILLE_SNAKE
+                
+            self.inter = .1
 
         #Retourne true en cas de collision avec le corps du serpent
         for x in self.corps:
