@@ -6,7 +6,6 @@ pygame.init()
 fenetre = pygame.display.set_mode((800,600))
 pygame.display.set_caption("Snake")
 tdr = pygame.time.Clock()
-tps = 0
 police_snake = pygame.font.SysFont('Verdana', 16)
 
 statut_partie = 0
@@ -84,7 +83,7 @@ def nouvelle_partie():
 en_cours = True
 while en_cours:
 
-    tps = tdr.tick(60)
+    tdr.tick(60)
     fenetre.fill((40,40,40))
 
     match statut_partie:
@@ -92,7 +91,6 @@ while en_cours:
             ecran_menu()
         case 1:
             ecran_jeu()
-            jeu.joueur.inter -= tps
         case 2:
             ecran_fin()
         case 3:
