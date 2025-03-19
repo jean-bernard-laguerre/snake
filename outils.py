@@ -9,10 +9,23 @@ TAILLE_SNAKE = 20
 class Snake():
 
     def __init__(self, x, y):
-        self.rect = pygame.Rect(x, y, TAILLE_SNAKE, TAILLE_SNAKE)
+        self.image = pygame.image.load("images/assets/spaceship.png")
+        self.image = pygame.transform.scale(self.image, (TAILLE_SNAKE, TAILLE_SNAKE))
+
+        self.corpsVert = pygame.image.load("images/assets/trailVertical.png")
+        self.corpsVert = pygame.transform.scale(self.corpsVert, (TAILLE_SNAKE, TAILLE_SNAKE))
+
+        self.corpsHor = pygame.image.load("images/assets/trail.png")
+        self.corpsHor = pygame.transform.scale(self.corpsHor, (TAILLE_SNAKE, TAILLE_SNAKE))
+        
+        self.corpsCoin = pygame.image.load("images/assets/trailCorner.png")
+        self.corpsCoin = pygame.transform.scale(self.corpsCoin, (TAILLE_SNAKE, TAILLE_SNAKE))
+
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (x, y)
 
         #Liste contenant les coordonnés du corps du serpent
-        self.corps = [[x-TAILLE_SNAKE,y],[x-40,y],[x-60,y]]
+        self.corps = [[x-TAILLE_SNAKE,y],[x-(TAILLE_SNAKE*2),y],[x-(TAILLE_SNAKE*3),y]]
         self.direction = 0
 
     def affichage(self, surface, rect):
@@ -41,22 +54,74 @@ class Snake():
                 self.corps[i][0] = self.corps[i-1][0]
                 self.corps[i][1] = self.corps[i-1][1]
 
-            pygame.draw.rect(surface, 'red', pygame.Rect(self.corps[i][0], self.corps[i][1], TAILLE_SNAKE, TAILLE_SNAKE))
+            i-=1
+        
+
+        i = len(self.corps)-1
+        while i >= 0:
+            # Draw each body segment
+            if i == len(self.corps) - 1:  # Tail segment
+                if i > 0:  # Make sure there's a segment before this one
+                    prev_segment = self.corps[i-1]
+                    current_segment = self.corps[i]
+                    
+                    # Determine orientation based on relative positions
+                    if prev_segment[0] == current_segment[0]:  # Same X = vertical
+                        surface.blit(self.corpsVert, pygame.Rect(self.corps[i][0], self.corps[i][1], TAILLE_SNAKE, TAILLE_SNAKE))
+                    else:  # Horizontal
+                        surface.blit(self.corpsHor, pygame.Rect(self.corps[i][0], self.corps[i][1], TAILLE_SNAKE, TAILLE_SNAKE))
+            elif i == 0:  # First segment (after head)
+                next_segment = self.corps[i+1]
+
+                if  (self.direction in [0, 1] and self.corps[i][0] == next_segment[0]) or \
+                    (self.direction in [2, 3] and self.corps[i][1] == next_segment[1]):
+                        surface.blit(self.corpsCoin, pygame.Rect(self.corps[i][0], self.corps[i][1], TAILLE_SNAKE, TAILLE_SNAKE))
+                else:
+                    # Base on current direction
+                    if self.direction in [0, 1]:  # Right or Left = horizontal
+                        surface.blit(self.corpsHor, pygame.Rect(self.corps[i][0], self.corps[i][1], TAILLE_SNAKE, TAILLE_SNAKE))
+                    else:  # Up or Down = vertical
+                        surface.blit(self.corpsVert, pygame.Rect(self.corps[i][0], self.corps[i][1], TAILLE_SNAKE, TAILLE_SNAKE))
+            else:  # Middle segments
+                # Just look at current and next segment
+                current_segment = self.corps[i]
+                prev_segment = self.corps[i-1]
+                next_segment = self.corps[i+1]
+
+                horizontal_movement = prev_segment[0] != current_segment[0]
+                vertical_movement = prev_segment[1] != current_segment[1]
+                next_horizontal_movement = current_segment[0] != next_segment[0]
+                next_vertical_movement = current_segment[1] != next_segment[1]
+
+                # If the direction changes (from horizontal to vertical or vice versa), it's a corner
+                if  (horizontal_movement and next_vertical_movement) or \
+                    (vertical_movement and next_horizontal_movement):
+                    surface.blit(self.corpsCoin, pygame.Rect(self.corps[i][0], self.corps[i][1], TAILLE_SNAKE, TAILLE_SNAKE))
+                else:
+                    # Simply check the alignment between segments
+                    if current_segment[0] == next_segment[0]:  # Same X = vertical alignment
+                        surface.blit(self.corpsVert, pygame.Rect(self.corps[i][0], self.corps[i][1], TAILLE_SNAKE, TAILLE_SNAKE))
+                    else:  # Different X = horizontal alignment
+                        surface.blit(self.corpsHor, pygame.Rect(self.corps[i][0], self.corps[i][1], TAILLE_SNAKE, TAILLE_SNAKE))
             
             i-=1
         
         #Avance automatiquement dans la direction actuelle
         match self.direction:
             case 0:
+                self.image = pygame.image.load("images/assets/spaceshipRight.png")
                 if self.rect.x + self.rect.width < a:
                     self.rect.x += TAILLE_SNAKE
             case 1:
+                self.image = pygame.image.load("images/assets/spaceshipLeft.png")
                 if self.rect.x > rect.x:
                     self.rect.x -= TAILLE_SNAKE
             case 2:
+                self.image = pygame.image.load("images/assets/spaceship.png")
                 if self.rect.y > rect.y:
                     self.rect.y -= TAILLE_SNAKE
             case 3:
+                self.image = pygame.image.load("images/assets/spaceshipDown.png")
                 if self.rect.y + self.rect.height < b:
                     self.rect.y += TAILLE_SNAKE
 
@@ -65,18 +130,22 @@ class Snake():
             if self.rect.colliderect(pygame.Rect(x[0], x[1], TAILLE_SNAKE, TAILLE_SNAKE)):
                 return True
 
-        pygame.draw.rect(surface, 'brown', self.rect)
-        time.sleep(.07)
+        self.image = pygame.transform.scale(self.image, (TAILLE_SNAKE, TAILLE_SNAKE))
+        surface.blit(self.image, self.rect)
+        time.sleep(.1)
 
         return False
 
 
 class Fruit():
     def __init__(self, x, y) -> None:
-        self.rect = pygame.Rect(x, y, TAILLE_SNAKE, TAILLE_SNAKE)
+        self.image = pygame.image.load("images/assets/life.png")
+        self.image = pygame.transform.scale(self.image, (TAILLE_SNAKE, TAILLE_SNAKE))
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (x, y)
 
     def affichage(self, surface):
-        pygame.draw.rect(surface, 'green', self.rect)
+        surface.blit(self.image, self.rect)
 
 
 class Jeu():
@@ -108,6 +177,7 @@ class Jeu():
             self.pomme.rect.x = random.randint(self.rect.x, self.rect.w)
             self.pomme.rect.y = random.randint(self.rect.y, self.rect.h)
             self.score += 1
+            jouer_son("audio/score.wav", 1, .1)
             
         return False
     
@@ -129,6 +199,7 @@ class Bouton():
         if self.rect.collidepoint(pos):
 
             if (pygame.mouse.get_pressed()[0] == 1):
+                jouer_son("audio/select.wav", 1)
                 action = True
 
         pygame.draw.rect(surface, 'red', self.rect, 2)
@@ -162,3 +233,9 @@ def recuperer():
     f.close()
     
     return sorted(scores["Scores"], reverse=True)[:10]
+
+#Joue un son
+def jouer_son(titre, canal, volume=1):
+    son = pygame.mixer.Sound(titre)
+    son.set_volume(volume)
+    pygame.mixer.Channel(canal).play(son)

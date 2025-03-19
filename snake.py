@@ -6,13 +6,31 @@ pygame.init()
 fenetre = pygame.display.set_mode((800,600))
 pygame.display.set_caption("Snake")
 tdr = pygame.time.Clock()
-police_snake = pygame.font.SysFont('Verdana', 16)
+
+pygame.mixer.music.load("audio/musique/Audiorezout - Subterranean.mp3")
+pygame.mixer.music.set_volume(.5)
+pygame.mixer.music.play(-1)
+
+police_snake = pygame.font.Font('polices/Orbitron-Regular.ttf', 16)
+police_titre = pygame.font.Font('polices\Monoton-Regular.ttf', 128)
+
+bg_menu = pygame.image.load("images/bg_menu.png")
+bg_menu_rect = bg_menu.get_rect()
+
+bg_jeu = pygame.image.load("images/bg_jeu.png")
+bg_jeu_rect = bg_jeu.get_rect()
+
+bg_fin = pygame.image.load("images/bg_fin.png")
+bg_fin_rect = bg_fin.get_rect()
 
 statut_partie = 0
 
 def ecran_menu():
 
     global statut_partie
+    titre = police_titre.render("SNAKE", 1 ,'white')
+    fenetre.blit(bg_menu, bg_menu_rect)
+    fenetre.blit(titre, (140, 100))
 
     if Bouton("Jouer", 250, 350, police_snake).affichage(fenetre):
 
@@ -33,6 +51,7 @@ def ecran_menu():
 def ecran_jeu():
 
     global statut_partie
+    fenetre.blit(bg_jeu, bg_jeu_rect)
 
     score = police_snake.render(f"Score: {jeu.score}", 1 ,'white')
 
@@ -45,6 +64,7 @@ def ecran_jeu():
                 
 def ecran_fin():
     global statut_partie
+    fenetre.blit(bg_fin, bg_fin_rect)
     
     score = police_snake.render(f"Score: {jeu.score}", 1, 'white')
     
@@ -61,6 +81,7 @@ def ecran_fin():
 
 def ecran_score():
     global statut_partie
+    fenetre.blit(bg_menu, bg_menu_rect)
 
     lbl_score = police_snake.render("Meilleurs scores", 1, 'white')
     fenetre.blit(lbl_score, (325, 50))
